@@ -1,0 +1,94 @@
+{% extends "main.html" %}
+
+{% load static %}
+{% block title %} Gestion de cursos {% endblock %}
+
+{% block body %}
+
+<div class="row">
+    <link rel="stylesheet" href="{% static "styles/font.css" %}">
+    <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
+        <h1><center> Gestion de materias</center></h1>
+        <div class="card">
+            <div class="card-body">
+                <form action="{% url 'register' %}" method="POST">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <input type="text"  name="codigo" class="form-control" placeholder="Codigo" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="text"  name="nombre" class="form-control" placeholder="Nombre"  max="40" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" name="creditos" class="form-control" placeholder="Creditos" required>
+                    </div>
+                    <div class="form-group">
+                        <br>
+                        <button type="submit" id="matricular" class="btn btn-success "> Matricular</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+            {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-success">
+                {{ message }}
+            </div>
+            {% endfor %}
+            {% endif %}
+
+    </div>
+<div class="col-sm-12 col-md-6 col-lg-8 col-xl-8">
+    <h1> <center> Listado de materias matriculadas</center></h1>
+    <nav class="navbar navbar-light bg-light">
+        <form class="form-inline align-content-end" name="q" method="GET" action="{% url "search" %}">
+            {% csrf_token %}
+          <input class="form-control mr-sm-0" type="search" placeholder="Buscar materia" aria-label="Search" required>
+          <button class="btn btn-outline-success my-2 my-xxl-4" type="submit">Buscar</button>
+        </form>
+      </nav>
+    <div class="table-responsive py-2">
+        <table class="table table-striped">
+            <thhead>
+                <tr>
+                    <th> #</th>
+                    <th>Codigo</th>
+                    <th>Nombre</th>
+                    <th>Creditos</th>
+                    <th>Fecha</th>
+                    <th>Acción</th>
+                </tr>
+            </thhead>
+            <tbody>
+                {% for materia in materias %}
+                <tr>
+                    <td>{{forloop.counter}}</td>
+                    <td>{{materia.id}}</td>
+                    <td>{{materia.nombre}}</td>
+                    <td>{{materia.creditos}}</td>
+                    <td>{{materia.fecha|date:"Y-m-d H:i"}}</td>
+                    <td>
+                        <div class="btn-group" role="group" aria-label="Botones de Acción">
+                            <form action="{% url "update" %}" method="POST">
+                                {% csrf_token %}
+                                <button id="update" class="btn btn-sm btn-primary"> Actualizar </button> 
+
+                            </form>
+                            <br>
+                            <form action="{% url "delete" materia.id %}" method="POST">
+                                {% csrf_token %}
+                                
+                                <button id="delete" class="btn btn-sm btn-danger" onclick=preventDelete()> Eiminar </button> 
+                            </form>
+                        </div>
+                      </td>
+                                          
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<script src="{% static "js/main.js" %}"></script>
+</div>
+{% endblock %}
